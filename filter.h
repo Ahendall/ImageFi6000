@@ -1,0 +1,1 @@
+int filterImage(const char *infile, const char *outfile, const char *filterType);
