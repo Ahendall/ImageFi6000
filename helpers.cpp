@@ -75,10 +75,32 @@ void Blur(int height, int width, vector<vector<RGBTRIPLE>> &image) {
 
 // Detect edges
 void Edge(int height, int width, vector<vector<RGBTRIPLE>> &image) {
-	return;
+    return;
 }
 
 // Convert to Sepia
 void Sepia(int height, int width, vector<vector<RGBTRIPLE>> &image) {
+    /*
+        Formula:
+        sepiaRed = .393(red) + .769(green) + .189(blue)
+        sepiaGreen = .349(red) + .686(green) + .168(blue)
+        sepiaBlue = .272(red) + .534(green) + .131(blue)
+    */
+    // Time complexity: O(N) where N = width * height
+    // Space complexity: O(1)
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            int sepiaRed = (int)(.393 * image[i][j].rgbtRed + .769 * image[i][j].rgbtGreen + .189 * image[i][j].rgbtBlue);
+            int sepiaGreen = (int)(.349 * image[i][j].rgbtRed + .686 * image[i][j].rgbtGreen + .168 * image[i][j].rgbtBlue);
+            int sepiaBlue = (int)(.272 * image[i][j].rgbtRed + .534 * image[i][j].rgbtGreen + .131 * image[i][j].rgbtBlue);
+
+            // Cap the values at 255
+            image[i][j].rgbtRed = (BYTE)min(sepiaRed, 255);
+            image[i][j].rgbtGreen = (BYTE)min(sepiaGreen, 255);
+            image[i][j].rgbtBlue = (BYTE)min(sepiaBlue, 255);
+        }
+    }
+
 	return;
 }
