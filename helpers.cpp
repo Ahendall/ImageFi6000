@@ -1,5 +1,6 @@
 #include "helpers.h"
 #include <utility>
+#include <cmath>
 
 // Convert image to grayscale
 void Grayscale(int height, int width, vector<vector<RGBTRIPLE>> &image) {
@@ -75,6 +76,63 @@ void Blur(int height, int width, vector<vector<RGBTRIPLE>> &image) {
 
 // Detect edges
 void Edge(int height, int width, vector<vector<RGBTRIPLE>> &image) {
+    // Formula: Multi-Chanel Sobel Operator
+    // Time Complexity: 
+    // Space Complexity: 
+    vector<vector<RGBTRIPLE>> temp = image;
+
+    // Define the Sobel kernels
+    const int Gx[3][3] = {
+        {-1, 0, 1},
+        {-2, 0, 2},
+        {-1, 0, 1}
+    };
+
+    const int Gy[3][3] = {
+        { 1,  2,  1},
+        { 0,  0,  0},
+        {-1, -2, -1}
+    };
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            // Define weighted sums for each pixel
+            int GxR = 0, GyR = 0;
+            int GxG = 0, GyG = 0;
+            int GxB = 0, GyB = 0;
+
+            // Iterate through neighbors
+            for (int k = -1; k <= 1; k++) {
+                for (int l = -1; l <= 1; l++) {
+                    // Verify target pixel within bounds
+                    if (i + k >= 0 &&
+						i + k < height &&
+						j + l >= 0 &&
+						j + l < width) {
+                            // Apply operator to each channel
+                            GxR += temp[i + k][j + l].rgbtRed * Gx[k + 1][l + 1];
+                            GyR += temp[i + k][j + l].rgbtRed * Gy[k + 1][l + 1];
+
+                            GxG += temp[i + k][j + l].rgbtGreen * Gx[k + 1][l + 1];
+                            GyG += temp[i + k][j + l].rgbtGreen * Gy[k + 1][l + 1];
+
+                            GxB += temp[i + k][j + l].rgbtBlue * Gx[k + 1][l + 1];
+                            GyB += temp[i + k][j + l].rgbtBlue * Gy[k + 1][l + 1];
+					}
+                }
+            }
+
+            // Apply Combination formula (why is it pythagoras bruh)
+            int combRed = round(sqrt((GxR * GxR) + (GyR * GyR)));
+            int combGreen = round(sqrt((GxG * GxG) + (GyG * GyG)));
+            int combBlue = round(sqrt((GxB * GxB) + (GyB * GyB)));
+
+            image[i][j].rgbtRed = (BYTE) min(combRed, 255);
+            image[i][j].rgbtGreen = (BYTE) min(combGreen, 255);
+            image[i][j].rgbtBlue = (BYTE) min(combBlue, 255);
+        }
+    }
+    
     return;
 }
 
