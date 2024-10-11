@@ -177,10 +177,10 @@ void MyFrame::OnApplyFilter(wxCommandEvent& event) {
 
 void MyFrame::UpdateFilterStatus(const wxString &filterType) {
     switch (filterStatus) {
-        case 2:
-            filterStatusText->SetLabelText("Status | Not enough memory to store image");
-            filterStatusText->SetForegroundColour(wxColour(255, 0, 0));
-            break;
+        // case 2:
+        //     filterStatusText->SetLabelText("Status | Not enough memory to store image");
+        //     filterStatusText->SetForegroundColour(wxColour(255, 0, 0));
+        //     break;
 
         case 1:
             filterStatusText->SetLabelText("Status | Unsupported file format");
