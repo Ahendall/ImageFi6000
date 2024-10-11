@@ -4,37 +4,72 @@
 // Convert image to grayscale
 void Grayscale(int height, int width, vector<vector<RGBTRIPLE>> &image) {
 	// Formula: Average of RGB values
-    // Time complexity: O(N) where N = m * n
-    // Space complexity: O(1)
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            float avg = (image[i][j].rgbtRed + image[i][j].rgbtGreen + image[i][j].rgbtBlue) / 3;
-            image[i][j].rgbtRed = (BYTE) avg;
-            image[i][j].rgbtGreen = (BYTE) avg;
-            image[i][j].rgbtBlue = (BYTE) avg;
-        }
-    }
-    
-    return;
+	// Time complexity: O(N) where N = width * height
+	// Space complexity: O(1)
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			float avg = (image[i][j].rgbtRed + image[i][j].rgbtGreen + image[i][j].rgbtBlue) / 3;
+			image[i][j].rgbtRed = (BYTE)avg;
+			image[i][j].rgbtGreen = (BYTE)avg;
+			image[i][j].rgbtBlue = (BYTE)avg;
+		}
+	}
+
+	return;
 }
 
 // Reflect image horizontally
 void Reflect(int height, int width, vector<vector<RGBTRIPLE>> &image) {
-    // Time complexity: O(N) where N = m * n
-    // Space complexity: O(1)
+	// Time complexity: O(N) where N = width * height
+	// Space complexity: O(1)
 
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width / 2; j++) {
-            RGBTRIPLE temp = move(image[i][j]);
-            image[i][j] = move(image[i][width - 1 - j]);
-            image[i][width - 1 - j] = move(temp);
-        }
-    }
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width / 2; j++) {
+			RGBTRIPLE temp = move(image[i][j]);
+			image[i][j] = move(image[i][width - 1 - j]);
+			image[i][width - 1 - j] = move(temp);
+		}
+	}
 
+	return;
 }
 
 // Blur image
 void Blur(int height, int width, vector<vector<RGBTRIPLE>> &image) {
+	// Formula: 3x3 box blur
+	// Time complexity: O(N); N = width * height
+	// Space complexity: O(N); N = width * height
+	vector<vector<RGBTRIPLE>> temp = image;
+
+	// Iterate through whole image
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			double redSum = 0, greenSum = 0, blueSum = 0;
+			int count = 0;
+
+			// Iterate through neighboring pixels
+			for (int neighbor_Y = i - 1; neighbor_Y <= i + 1; neighbor_Y++) {
+				for (int neighbor_X = j - 1; neighbor_X <= j + 1; neighbor_X++) {
+					// verify that target pixel is within image bounds
+					if (neighbor_X >= 0 &&
+						neighbor_X < width &&
+						neighbor_Y >= 0 &&
+						neighbor_Y < height) {
+                            count++;
+                            redSum += temp[neighbor_Y][neighbor_X].rgbtRed;
+                            greenSum += temp[neighbor_Y][neighbor_X].rgbtGreen;
+                            blueSum += temp[neighbor_Y][neighbor_X].rgbtBlue;
+					}
+				}
+			}
+
+            // Apply Updated Values
+            image[i][j].rgbtRed = (BYTE) (redSum / count);
+            image[i][j].rgbtGreen = (BYTE) (greenSum / count);
+            image[i][j].rgbtBlue = (BYTE) (blueSum / count);
+		}
+	}
+
 	return;
 }
 
@@ -45,5 +80,5 @@ void Edge(int height, int width, vector<vector<RGBTRIPLE>> &image) {
 
 // Convert to Sepia
 void Sepia(int height, int width, vector<vector<RGBTRIPLE>> &image) {
-    return;
+	return;
 }
