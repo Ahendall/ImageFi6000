@@ -1,0 +1,1 @@
+g++ main.cpp filter.cpp helpers.cpp `wx-config --cxxflags --libs` -o "Image Filter-inator 6000" -w
