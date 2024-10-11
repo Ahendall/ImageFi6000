@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include <utility>
 
 // Convert image to grayscale
 void Grayscale(int height, int width, vector<vector<RGBTRIPLE>> &image) {
@@ -19,7 +20,17 @@ void Grayscale(int height, int width, vector<vector<RGBTRIPLE>> &image) {
 
 // Reflect image horizontally
 void Reflect(int height, int width, vector<vector<RGBTRIPLE>> &image) {
-	return;
+    // Time complexity: O(N) where N = m * n
+    // Space complexity: O(1)
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width / 2; j++) {
+            RGBTRIPLE temp = move(image[i][j]);
+            image[i][j] = move(image[i][width - 1 - j]);
+            image[i][width - 1 - j] = move(temp);
+        }
+    }
+
 }
 
 // Blur image
