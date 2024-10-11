@@ -4,9 +4,13 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <iostream>
 
 // TODO - Implement the filter function
 int filterImage(const char *infile, const char *outfile, const char *filterType) {
+    // DEBUG - PRINT FILTERTYPE
+    printf("Filter Type: %s\n", filterType);
+
 	// Open input file
 	FILE *inptr = fopen(infile, "r");
 
@@ -18,7 +22,7 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 	// Check if output file already exists. if it does, create a new outfile name with a number appended,
 	// Make this iterative until a unique name is found
 	FILE *outptr = fopen(outfile, "r");
-	std::string newOutFile;
+	std::string newOutFile = outfile;
 
 	if (outptr != NULL) {
 		fclose(outptr);
@@ -26,8 +30,12 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 		// loop until "Filename (n)" is NULL
 		int fileCount = 1;
 		while (true) {
-			newOutFile = outfile;
-			newOutFile.insert(newOutFile.find_last_of('.'), " (" + std::to_string(fileCount) + ")");
+            if (fileCount == 1) {
+                newOutFile.insert(newOutFile.find_last_of('.'), " (" + std::to_string(fileCount) + ")");
+            } else {
+                newOutFile.replace(newOutFile.find_last_of('(') + 1, newOutFile.find_last_of(')'), std::to_string(fileCount));
+                newOutFile += ").bmp";
+            }
 			outptr = fopen(newOutFile.c_str(), "r");
 
 			if (outptr == NULL) {
@@ -42,6 +50,9 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 
 	// Open output file in write mode
 	outptr = fopen(newOutFile.c_str(), "w");
+    // DEBUG - PRINT newOutFile.c_str() and newOutFile
+    printf("Output File: %s\n", newOutFile.c_str());
+    std::cout << "Output File: " << newOutFile << std::endl;
 
 	if (outptr == NULL) {
 		fclose(inptr);
@@ -87,13 +98,14 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 	// Filter image
 	// convert filter type to cpp string
     std::string filterTypeStr(filterType);
+    std::cout << "Filter Type: " << filterTypeStr << std::endl;
     if (filterTypeStr == "Grayscale") {
         Grayscale(height, width, image);
     } else if (filterTypeStr == "Reflect") {
         Reflect(height, width, image);
     } else if (filterTypeStr == "Blur") {
         Blur(height, width, image);
-    } else if (filterTypeStr == "Edges") {
+    } else if (filterTypeStr == "Edge") {
         Edge(height, width, image);
     } else {
         fclose(outptr);
