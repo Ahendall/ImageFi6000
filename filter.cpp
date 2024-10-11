@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <vector>
 
 // TODO - Implement the filter function
 int filterImage(const char *infile, const char *outfile, const char *filterType) {
@@ -69,14 +70,7 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 	int width = bi.biWidth;
 
 	// Allocate memory for image
-	RGBTRIPLE(*image)
-	[width] = calloc(height, width * sizeof(RGBTRIPLE));
-	if (image == NULL) {
-		printf("Not enough memory to store image.\n");
-		fclose(outptr);
-		fclose(inptr);
-		return 2;
-	}
+	std::vector<std::vector<RGBTRIPLE>> image(height, std::vector<RGBTRIPLE>(width));
 
 	// Determine padding for scanlines
 	int padding = (4 - (width * sizeof(RGBTRIPLE)) % 4) % 4;
@@ -84,7 +78,7 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 	// Iterate over infile's scanlines
 	for (int i = 0; i < height; i++) {
 		// Read row into pixel array
-		fread(image[i], sizeof(RGBTRIPLE), width, inptr);
+		fread(image[i].data(), sizeof(RGBTRIPLE), width, inptr);
 
 		// Skip over padding
 		fseek(inptr, padding, SEEK_CUR);
@@ -100,7 +94,7 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
     } else if (filterTypeStr == "Blur") {
         Blur(height, width, image);
     } else if (filterTypeStr == "Edges") {
-        Edges(height, width, image);
+        Edge(height, width, image);
     } else {
         fclose(outptr);
         fclose(inptr);
@@ -116,7 +110,7 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 	// Write new pixels to outfile
 	for (int i = 0; i < height; i++) {
 		// Write row to outfile
-		fwrite(image[i], sizeof(RGBTRIPLE), width, outptr);
+		fwrite(image[i].data(), sizeof(RGBTRIPLE), width, outptr);
 
 		// Write padding at end of row
 		for (int k = 0; k < padding; k++) {
@@ -124,8 +118,9 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 		}
 	}
 
-	// Free memory for image
-	free(image);
+	// // Free memory for image
+	// free(image);
+	// Not needed bc made the switch from pointer arrays to vectors
 
 	// Close files
 	fclose(inptr);
