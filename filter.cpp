@@ -107,6 +107,8 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
         Blur(height, width, image);
     } else if (filterTypeStr == "Edge") {
         Edge(height, width, image);
+    } else if (filterTypeStr == "Sepia") {
+        Sepia(height, width, image);
     } else {
         fclose(outptr);
         fclose(inptr);
