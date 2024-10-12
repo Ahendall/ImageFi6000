@@ -4,23 +4,22 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-#include <iostream>
+// #include <iostream>
 
 // TODO - Implement the filter function
 int filterImage(const char *infile, const char *outfile, const char *filterType) {
-    // DEBUG - PRINT FILTERTYPE
-    printf("Filter Type: %s\n", filterType);
+    // // DEBUG - PRINT FILTERTYPE
+    // printf("Filter Type: %s\n", filterType);
 
 	// Open input file
 	FILE *inptr = fopen(infile, "r");
 
 	if (inptr == NULL) {
-		printf("Could not open %s.\n", infile);
+		// printf("Could not open %s.\n", infile);
 		return -1;
 	}
 
-	// Check if output file already exists. if it does, create a new outfile name with a number appended,
-	// Make this iterative until a unique name is found
+	// Check if output file already exists. if it does, create a new outfile name with a number appended
 	FILE *outptr = fopen(outfile, "r");
 	std::string newOutFile = outfile;
 
@@ -50,9 +49,9 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 
 	// Open output file in write mode
 	outptr = fopen(newOutFile.c_str(), "w");
-    // DEBUG - PRINT newOutFile.c_str() and newOutFile
-    printf("Output File: %s\n", newOutFile.c_str());
-    std::cout << "Output File: " << newOutFile << std::endl;
+    // // DEBUG - PRINT newOutFile.c_str() and newOutFile
+    // printf("Output File: %s\n", newOutFile.c_str());
+    // std::cout << "Output File: " << newOutFile << std::endl;
 
 	if (outptr == NULL) {
 		fclose(inptr);
@@ -72,7 +71,7 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 		bi.biBitCount != 24 || bi.biCompression != 0) {
 		fclose(outptr);
 		fclose(inptr);
-		printf("Unsupported file format.\n");
+		// printf("Unsupported file format.\n");
 		return 1;
 	}
 
@@ -98,7 +97,7 @@ int filterImage(const char *infile, const char *outfile, const char *filterType)
 	// Filter image
 	// convert filter type to cpp string
     std::string filterTypeStr(filterType);
-    std::cout << "Filter Type: " << filterTypeStr << std::endl;
+    // std::cout << "Filter Type: " << filterTypeStr << std::endl;
     if (filterTypeStr == "Grayscale") {
         Grayscale(height, width, image);
     } else if (filterTypeStr == "Reflect") {
